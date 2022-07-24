@@ -20,6 +20,12 @@ public class PasteboardPlugin: NSObject, FlutterPlugin {
       } else {
         result(FlutterError(code: "0", message: "arguments is not String list.", details: nil))
       }
+    case "writeImage":
+      if let data = call.arguments as? FlutterStandardTypedData {
+        writeImageToPasteboard(data.data, result: result)
+      } else {
+        result(FlutterError(code: "0", message: "arguments is not data", details: nil))
+      }
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -61,6 +67,12 @@ public class PasteboardPlugin: NSObject, FlutterPlugin {
     } else {
       result(FlutterError(code: "0", message: "failed to write pasteboard objects", details: nil))
     }
+  }
+
+  private func writeImageToPasteboard(_ data: Data, result: FlutterResult) {
+    let image = NSImage(data: data)
+    UIPasteboard.general.setData(image, forType: .png)
+    result(nil)
   }
 }
 
