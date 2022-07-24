@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'src/pasteboard_platform_web.dart'
-    if (dart.library.io) 'src/pasteboard_platform_io.dart';
+import 'src/pasteboard_platform_web.dart' if (dart.library.io) 'src/pasteboard_platform_io.dart';
 
 class Pasteboard {
   /// Returns the image data of the pasteboard.
@@ -18,8 +17,7 @@ class Pasteboard {
   /// only available on iOS and the web.
   ///
   /// set image data to system pasteboard.
-  static Future<void> writeImage(Uint8List? image) =>
-      pasteboard.writeImage(image);
+  static Future<void> writeImage(Uint8List? image) => pasteboard.writeImage(image);
 
   /// Only available on desktop platforms.
   ///
@@ -29,8 +27,7 @@ class Pasteboard {
   /// Only available on desktop platforms.
   ///
   /// Set files to system pasteboard.
-  static Future<bool> writeFiles(List<String> files) =>
-      pasteboard.writeFiles(files);
+  static Future<bool> writeFiles(List<String> files) => pasteboard.writeFiles(files);
 
   /// Available on all platforms.
   /// Get text from system pasteboard.

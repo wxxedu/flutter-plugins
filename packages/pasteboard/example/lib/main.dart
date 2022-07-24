@@ -51,8 +51,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   TextButton(
                     onPressed: () async {
-                      final lines =
-                          const LineSplitter().convert(textController.text);
+                      final lines = const LineSplitter().convert(textController.text);
                       await Pasteboard.writeFiles(lines);
                     },
                     child: const Text('copy as files'),
@@ -68,7 +67,7 @@ class _MyAppState extends State<MyApp> {
               MaterialButton(
                 onPressed: () async {
                   final bytes = await Pasteboard.image;
-
+                  debugPrint('bytes: $bytes');
                   setState(() {
                     fileUrl = null;
                     this.bytes = bytes;
@@ -78,9 +77,9 @@ class _MyAppState extends State<MyApp> {
                 child: const Text('paste image'),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   final data = base64Decode(_kImageBase64);
-                  Pasteboard.writeImage(data);
+                  await Pasteboard.writeImage(data);
                 },
                 child: const Text("Write Image"),
               ),

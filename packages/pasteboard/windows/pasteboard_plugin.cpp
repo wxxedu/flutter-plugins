@@ -429,44 +429,51 @@ void PasteboardPlugin::HandleMethodCall(
       return;
     }
     SetClipboardData(CF_HDROP, storage.hGlobal);
-	result->Success();
+	  result->Success();
   }
   else if (method_call.method_name() == "html") {
+    UINT CF_HTML = RegisterClipboardFormatA("HTML Format");
+    bool isHTMLFormatAvailable = false;
 
-  UINT CF_HTML = RegisterClipboardFormatA("HTML Format");
-  bool isHTMLFormatAvailable = false;
+    if (IsClipboardFormatAvailable(CF_HTML)) {
+      isHTMLFormatAvailable = true;
+    }
 
-  if (IsClipboardFormatAvailable(CF_HTML)) {
-	  isHTMLFormatAvailable = true;
-  }
+    if (!isHTMLFormatAvailable) {
+      result->Success();
+      return;
+    }
 
-  if (!isHTMLFormatAvailable) {
-	  result->Success();
-	  return;
-  }
-
-	if (!OpenClipboard(nullptr)) {
-		result->Error("0", "open clipboard failed");
-		return;
-	}
-	HANDLE hClipboardData = GetClipboardData(CF_HTML);
-	if (hClipboardData == NULL) {
-		result->Success();
-		CloseClipboard();
-		return;
-	}
-	else {
-		char* p = (char*)GlobalLock(hClipboardData);
-		SIZE_T size = GlobalSize(hClipboardData);
-		std::string str;
-		str.assign(p, size);
-		result->Success(flutter::EncodableValue(str));
-		GlobalUnlock(hClipboardData);
-	}
-	CloseClipboard();
-  }
-  else {
-  result->NotImplemented();
+    if (!OpenClipboard(nullptr)) {
+      result->Error("0", "open clipboard failed");
+      return;
+    }
+    HANDLE hClipboardData = GetClipboardData(CF_HTML);
+    if (hClipboardData == NULL) {
+      result->Success();
+      CloseClipboard();
+      return;
+    }
+    else {
+      char* p = (char*)GlobalLock(hClipboardData);
+      SIZE_T size = GlobalSize(hClipboardData);
+      std::string str;
+      str.assign(p, size);
+      result->Success(flutter::EncodableValue(str));
+      GlobalUnlock(hClipboardData);
+    }
+    CloseClipboard();
+  } else if (method_call.method_name() == "writeImage") {
+    auto *arguments = method_call.arguments();
+    auto image = std::get_if<std::vector<flutter::EncodableValue>>(arguments);
+    ScopedClipboard clipboard;
+    if (!clipboard.Acquire(nullptr)) {
+      result->Error("0", "failed to open clipboard");
+      return;
+    }
+    result->NotImplemented();
+  } else {
+    result->NotImplemented();
   }
 }
 

@@ -70,9 +70,18 @@ public class PasteboardPlugin: NSObject, FlutterPlugin {
   }
 
   private func writeImageToPasteboard(_ data: Data, result: FlutterResult) {
-    let image = NSImage(data: data)
-    UIPasteboard.general.setData(image, forType: .png)
-    result(nil)
+    if let image = NSImage(data: data) {
+      let pb = NSPasteboard.general
+      pb.clearContents()
+      let success = pb.writeObjects([image])
+      if (success) {
+        result(nil)
+      } else {
+        result(FlutterError(code: "0", message: "failed to write pasteboard image", details: nil))
+      } 
+    } else {
+      result(FlutterError(code: "0", message: "failed to write pasteboard image", details: nil))
+    }
   }
 }
 
